@@ -1,0 +1,41 @@
+dataset:
+  name: users
+  source:
+    mongodb:
+      database: app_db
+      collection: users
+
+  kafka:
+    topic_name: "cdc.app_db.users"
+    partitions: 3
+    replication_factor: 1
+
+  clickhouse:
+    database: analytics
+    table_name: users
+    engine: ReplacingMergeTree
+    order_by:
+      - _id
+    version_column: _version
+    columns:
+      - name: _id
+        type: String
+      - name: name
+        type: String
+      - name: email
+        type: String
+      - name: age
+        type: UInt32
+        default: "0"
+      - name: country
+        type: String
+      - name: created_at
+        type: DateTime64(3)
+      - name: status
+        type: String
+      - name: _version
+        type: UInt64
+        default: "0"
+      - name: _deleted
+        type: UInt8
+        default: "0"

@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────
+# Dataset Definition Template
+# ─────────────────────────────────────────────────────────────
+# Copy this file to datasets/<name>.yaml and fill in your values.
+# Dagster will auto-detect new datasets and run the onboarding.
+# ─────────────────────────────────────────────────────────────
+
+dataset:
+  # Unique name for this dataset (used in asset names, topics, tables)
+  name: my_dataset
+
+  source:
+    mongodb:
+      database: app_db                # MongoDB database name
+      collection: my_collection       # MongoDB collection name
+
+  kafka:
+    topic_name: ""                    # Leave empty for auto: cdc.<db>.<collection>
+    partitions: 3
+    replication_factor: 1
+
+  clickhouse:
+    database: analytics               # ClickHouse target database
+    table_name: my_collection          # ClickHouse target table
+    engine: ReplacingMergeTree         # ReplacingMergeTree for CDC
+    order_by:
+      - _id
+    version_column: _version
+
+    # Define your columns explicitly for optimal ClickHouse performance
+    columns:
+      - name: _id
+        type: String
+      # Add your columns here:
+      # - name: field_name
+      #   type: String | UInt32 | Float64 | DateTime64(3) | ...
+      #   default: "0"  # optional default value
+
+      # ── CDC metadata columns (always include these) ──
+      - name: _version
+        type: UInt64
+        default: "0"
+      - name: _deleted
+        type: UInt8
+        default: "0"

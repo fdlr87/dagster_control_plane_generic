@@ -1,0 +1,7 @@
+# Workspace configuration — points to user code gRPC server
+
+load_from:
+  - grpc_server:
+      host: dagster-user-code
+      port: 4000
+      location_name: "data_control_plane"

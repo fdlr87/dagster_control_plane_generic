@@ -1,0 +1,36 @@
+FROM python:3.11-slim
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+RUN pip install --no-cache-dir \
+    dagster==1.9.6 \
+    dagster-webserver==1.9.6 \
+    dagster-postgres==0.25.6 \
+    dagster-docker==0.25.6 \
+    pymongo==4.10.1 \
+    clickhouse-connect==0.8.9 \
+    confluent-kafka==2.6.1 \
+    requests==2.32.3 \
+    pyyaml==6.0.2 \
+    pydantic==2.10.3
+
+# Set workdir
+WORKDIR /opt/dagster/app
+
+# Copy project files
+COPY dagster_project/ /opt/dagster/app/dagster_project/
+COPY datasets/ /opt/dagster/app/datasets/
+COPY scripts/ /opt/dagster/app/scripts/
+COPY dagster.yaml /opt/dagster/app/dagster.yaml
+COPY workspace.yaml /opt/dagster/app/workspace.yaml
+
+# Set DAGSTER_HOME
+ENV DAGSTER_HOME=/opt/dagster/app
+
+EXPOSE 3000 4000
