@@ -33,6 +33,8 @@ def _compute_yaml_hash(filepath: Path) -> str:
         "and historical load)."
     ),
     minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+    job_name="__ASSET_JOB",
 )
 def dataset_yaml_sensor(context: SensorEvaluationContext):
     """Sensor that watches for new dataset YAML files."""

@@ -1,0 +1,45 @@
+dataset:
+  name: customers
+  source:
+    mongodb:
+      database: app_db
+      collection: customers
+
+  kafka:
+    topic_name: "cdc.app_db.customers"
+    partitions: 3
+    replication_factor: 1
+
+  clickhouse:
+    database: analytics
+    table_name: customers
+    engine: ReplacingMergeTree
+    order_by:
+      - _id
+    version_column: _version
+    columns:
+      - name: _id
+        type: String
+      - name: user_id
+        type: String
+      - name: product
+        type: String
+      - name: quantity
+        type: UInt32
+        default: "0"
+      - name: price
+        type: Float64
+        default: "0"
+      - name: total
+        type: Float64
+        default: "0"
+      - name: order_date
+        type: DateTime64(3)
+      - name: status
+        type: String
+      - name: _version
+        type: UInt64
+        default: "0"
+      - name: _deleted
+        type: UInt8
+        default: "0"
